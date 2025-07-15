@@ -40,13 +40,14 @@ class TransOrderController extends Controller
         $today = Carbon::now()->format('dmY');
         $countDay = TransOrders::whereDate('created_at', now()->toDateString())->count() +1;
         $runningNumber = str_pad($countDay, 3, '0', STR_PAD_LEFT);
-        $title = "Tambah Transaksi";
         $orderCode = "TR-". $today . "-" . $runningNumber;
+        $title = "Tambah Transaksi";
 
         $customers = Customers::orderBy('id', 'desc')->get();
         $services = TypeOfServices::orderBy('id', 'desc')->get();
+        $orders = TransOrders::with(['customer', 'details.service'])->orderBy(column: 'id', direction: 'desc')->get();
 
-        return view ('trans.laundry', compact('title', 'orderCode', 'customers', 'services'));
+        return view ('trans.create', compact('title', 'orderCode', 'customers', 'services', 'orders'));
     }
 
     /**
@@ -54,9 +55,9 @@ class TransOrderController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'order_end_date' => 'required'
-        ]);
+        // $request->validate([
+        //     'order_end_date' => 'required'
+        // ]);
 
         $transOrder = TransOrders::create(
 [
@@ -66,18 +67,48 @@ class TransOrderController extends Controller
              'total' => $request->grand_total
             ]);
 
-            foreach ($request->id_product as $key => $idProduct) {
+            foreach ($request->id_service as $key => $idService) {
                 $id_trans = $transOrder->id;
 
                 TransDetails::create([
                     'id_trans' => $id_trans,
-                    'id_service' => $idProduct,
+                    'id_service' => $idService,
                     'qty' => $request->qty[$key],
                     'subtotal' => $request->total[$key]
                 ]);
             }
 
             return redirect()->route('trans.index')->with('status', 'Berhasil');
+        // $today = Carbon::now()->format('dmY');
+        // $countDay = TransOrders::whereDate('created_at', now())->count() + 1;
+        // $runningNumber = str_pad($countDay, 3, '0', STR_PAD_LEFT);
+        // $code = 'TR-' . $today . '-' . $runningNumber;
+
+        // if (empty($request->total)) {
+        //     return redirect()->back()->with('error', 'Total tidak boleh kosong');
+
+        // }
+
+        // $order = TransOrders::create([
+        //     'id_customer' => $request->id_customer,
+        //     'order_code' => $code,
+        //     'order_end_date' => $request->order_end_date,
+        //     'order_note' => $request->order_note,
+        //     'total' => $request->total
+        // ]);
+
+        // $id_order = $order->id;
+        // foreach ($request->id_service as $index => $idService) {
+        //     TransDetails::create([
+        //         'id_order' => $id_order,
+        //         'id_service' => $idService,
+        //         'qty' => $request->qty[$index],
+        //         'subtotal' => $request->subtotal[$index]
+        //     ]);
+        // }
+
+
+        // return redirect()->route('order.index')->with('success', 'Add order data successfully');
     }
 
     /**

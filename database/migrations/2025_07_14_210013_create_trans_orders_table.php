@@ -19,9 +19,12 @@ return new class extends Migration
             $table->unsignedBigInteger('order_status')->default(0)->nullable();
             $table->integer('order_pay');
             $table->integer('order_change');
+            $table->text('note')->nullable();
             $table->integer('total');
             $table->foreign('id_customer')->references('id')->on('customers')->onDelete('cascade');
             $table->timestamps();
+            
+
         });
     }
 

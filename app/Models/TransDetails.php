@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TransDetails extends Model
 {
-    protected $fillable = ['id_trans', 'id_service', 'qty', 'subtotal', 'note'];
+    protected $fillable = ['id_trans', 'id_service', 'qty', 'subtotal'];
 
     public function transOrder ()
     {

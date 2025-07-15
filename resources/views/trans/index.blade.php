@@ -22,13 +22,14 @@
                     @foreach ($datas as $index => $data )
                     <tr>
                         <td>{{$index += 1}}</td>
-                        <td><a href="{{route('trans.show', $data->id)}}">{{$data ->order_code}}</a></td>
-                        <td>{{$data ->customer->name}}</td>
-                        <td>{{$data ->order_end_date}}</td>
-                        <td>{{$data->status_text}}</td>
+                        {{-- <td><a href="{{route('trans.show', $data->id)}}">{{$data ->order_code}}</a></td> --}}
+                        <td>{{$data ->order_code ?? 'na'}}</td>
+                        <td>{{$data ->customer->customer_name ?? 'na'}}</td>
+                        <td>{{$data ->order_end_date ?? 'na'}}</td>
+                        <td>{{$data->status_text ?? 'na'}}</td>
                         <td>
-                            <a href="{{route('print_struk', $data->id)}}" class="btn btn-secondary">Print</a>
-                            <a href="{{route('trans.show', $data->id)}}" class="btn btn-primary">Edit</a>
+                            {{-- <a href="{{route('print_struk', $data->id)}}" class="btn btn-secondary">Print</a> --}}
+                            {{-- <a href="{{route('trans.show', $data->id)}}" class="btn btn-primary">Edit</a> --}}
                             <form action="{{route('trans.destroy', $data->id)}}" method="post" style="display: inline">
                                 @csrf
                                 @method('DELETE')

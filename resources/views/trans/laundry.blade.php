@@ -396,7 +396,7 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>🫧 VadiZ Bubbles</h1>
+            <h1>🧼 VadiZ Bubbles</h1>
             <p class="subtitle">Vadiz Bubbles: Bikin Pakaian dan Perasaan Lebih Segar.</p>
         </div>
 
@@ -426,7 +426,8 @@
             <div class="card">
                 <h2>🛒 Transaksi Baru</h2>
 
-                <form id="transactionForm">
+                <form method="POST" action="{{ route('trans.store')}}" id="transactionForm" class="needs-validation">
+                    @csrf
                     <div class="form-group">
                         <label for="customerName" class="form-label">Nama Pelanggan *</label>
                         <select name="id_customer" id="customerName" class="form-control">
@@ -518,7 +519,7 @@
             <div class="card">
                 <h2>📊 Riwayat Transaksi</h2>
                 <div class="transaction-list" id="transactionHistory">
-                    <div class="transaction-item">
+                    {{-- <div class="transaction-item">
                         <h4>TRX-001 - John Doe</h4>
                         <p>📞 0812-3456-7890</p>
                         <p>🛍️ Cuci Setrika - 2.5kg</p>
@@ -533,12 +534,15 @@
                         <p>💰 Rp 15.000</p>
                         <p>📅 13 Juli 2025, 13:15</p>
                         <span class="status-badge status-ready">Siap</span>
-                    </div>
+                    </div> --}}
                 </div>
+                <a href="{{route ('trans.index')}}" style="text-decoration: none; color: white;">
+                    <button class="btn btn-warning" onclick="showAllTransactions()" style="width: 100%; margin-top: 15px;">
+                        📋 Lihat Semua Transaksi
+                    </button>
 
-                <button class="btn btn-warning" onclick="showAllTransactions()" style="width: 100%; margin-top: 15px;">
-                    📋 Lihat Semua Transaksi
-                </button>
+                </a>
+
             </div>
         </div>
 
@@ -565,6 +569,17 @@
     </div>
 
     <script>
+
+        const selectCustomer = document.querySelector('#customerName');
+
+            selectCustomer.addEventListener('change', ()=>{
+            const optionCustomer = selectCustomer.options[selectCustomer.selectedIndex];
+            const phoneCustomer = optionCustomer.dataset.phone;
+            const addressCustomer = optionCustomer.dataset.address;
+            document.querySelector('#customerPhone').value = phoneCustomer;
+            document.querySelector('#customerAddress').value = addressCustomer;
+        });
+
         let cart = [];
         let transactions = JSON.parse(localStorage.getItem('laundryTransactions')) || [];
         let transactionCounter = transactions.length + 1;
@@ -1030,15 +1045,7 @@
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
 
-            const selectCustomer = document.querySelector('#customerName');
 
-            selectCustomer.addEventListener('change', ()=>{
-            const optionCustomer = selectCustomer.options[selectCustomer.selectedIndex];
-            const phoneCustomer = optionCustomer.dataset.phone;
-            const addressCustomer = optionCustomer.dataset.address;
-            document.querySelector('#customerPhone').value = phoneCustomer;
-            document.querySelector('#customerAddress').value = addressCustomer;
-        });
 
             updateTransactionHistory();
             updateStats();
